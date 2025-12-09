@@ -1444,10 +1444,10 @@ microphone:
     i2s_mode: secondary
     i2s_audio_id: i2s_input
     channel: stereo
-    on_data:
-      - script.execute:
-          id: process_audio_data
-          audio_data: !lambda return x;
+#    on_data:
+#      - script.execute:
+#          id: process_audio_data
+#          audio_data: !lambda return x;
 
 speaker:
   # Hardware speaker output
