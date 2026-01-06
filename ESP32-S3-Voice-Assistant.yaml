@@ -572,6 +572,7 @@ media_player:
     id: external_media_player
     name: None
     internal: False
+    buffer_size: 2000000
     volume_min: 0.4
     volume_max: 0.85
     volume_increment: 0.15
