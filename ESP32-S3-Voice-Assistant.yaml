@@ -942,5 +942,5 @@ binary_sensor:
               - media_player.volume_down:
               - delay: 30ms
 
-bluetooth_proxy:
-  active: true
+#bluetooth_proxy:
+#  active: true
