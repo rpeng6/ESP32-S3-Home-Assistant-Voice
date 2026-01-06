@@ -136,8 +136,8 @@ light:
     internal: true
     rgb_order: GRB
     pin: ${ledpin}
-    num_leds: 1
-    rmt_symbols: 48
+    num_leds: 3
+    rmt_symbols: 192
     chipset: ws2812
     default_transition_length: 0s
     effects:
