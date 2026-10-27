@@ -423,7 +423,7 @@ script:
   - id: play_sound
     parameters:
       priority: bool
-      sound_file: "audio::AudioFile*"
+      sound_file: "std::add_const_t<audio::AudioFile>*"
     then:
       - lambda: |-
           if (priority) {
@@ -435,7 +435,7 @@ script:
           }
           if ( (id(external_media_player).state != media_player::MediaPlayerState::MEDIA_PLAYER_STATE_ANNOUNCING ) || priority) {
             id(external_media_player)
-              ->play_file(sound_file, true, false);
+              ->play_file(const_cast<audio::AudioFile *>(sound_file), true, false);
           }
 
   # Script used to fetch the first active timer (Stored in global first_active_timer)
