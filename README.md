@@ -96,16 +96,9 @@ factory-reset and error sounds) used to be fetched from `raw.githubusercontent.c
 play time - an HTTPS round trip to GitHub in the middle of the wake path. They are now
 referenced as local paths (`sounds/<name>`) and **embedded in the firmware**.
 
-**Requirement:** the `sounds/` folder from this repo must exist inside your ESPHome
-config directory (next to the device YAML):
+**No manual setup required.** `file:` paths resolve relative to the YAML that declares them, so a package fetched from Git carries its own `sounds/` folder - a build resolves them to `/config/.esphome/packages/<hash>/sounds/...` and embeds them from there.
 
-```bash
-cp -r sounds/ /config/esphome/sounds/     # add-on
-# or, for a CLI/docker build: copy sounds/ into the mounted /config directory
-```
-
-A build without them fails at compile time with a missing-file error, so it cannot ship
-silently broken firmware.
+If you instead vendor the package locally (`!include localtest/core.yaml`), keep a copy of `sounds/` beside your device YAML, because relative paths then resolve against your config directory.
 
 ## Also ported from upstream
 
