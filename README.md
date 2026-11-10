@@ -74,3 +74,41 @@ warnings on the same sentence.
 | `[W][component] display took a long time` during speech | a forced full-page redraw in `on_play`/`on_announcement` is blocking the loop; remove `component.update` and let the display interval paint |
 | Speaker retries `Parent bus is busy` forever | shared mic/speaker I2S bus + ESPHome ≤ 2026.10 mic-stop race — see above |
 | Wake word needs shouting | set `micro_wake_word.microphone.gain_factor`, lower `probability_cutoff`, raise the ADC PGA (`audio_adc: mic_gain`) |
+
+## Wake word sensitivity select (ported from upstream, PR #558)
+
+The package now ships a `Wake word sensitivity` select entity with the maintainers'
+measured presets. Cutoffs are quantized `uint8` values (`round(probability * 255)`):
+
+| Preset | okay_nabu | hey_jarvis | False accepts/hour |
+|---|---|---|---|
+| Slightly sensitive | 0.85 (217) | 0.97 (247) | 0.00 / 0.56 |
+| Moderately sensitive | 0.69 (176) | 0.92 (235) | 0.38 / 0.94 |
+| Very sensitive | 0.56 (143) | 0.83 (212) | 0.75 / 1.50 |
+
+Pick it in Home Assistant instead of reflashing. It survives reboots (`restore_value`),
+and it overrides the `probability_cutoff` values written in the YAML at runtime.
+
+## Sound files are now built into the firmware
+
+The chimes (`wake_word_triggered`, `timer_finished`, `mute_switch_*`, button clicks,
+factory-reset and error sounds) used to be fetched from `raw.githubusercontent.com` at
+play time - an HTTPS round trip to GitHub in the middle of the wake path. They are now
+referenced as local paths (`sounds/<name>`) and **embedded in the firmware**.
+
+**Requirement:** the `sounds/` folder from this repo must exist inside your ESPHome
+config directory (next to the device YAML):
+
+```bash
+cp -r sounds/ /config/esphome/sounds/     # add-on
+# or, for a CLI/docker build: copy sounds/ into the mounted /config directory
+```
+
+A build without them fails at compile time with a missing-file error, so it cannot ship
+silently broken firmware.
+
+## Also ported from upstream
+
+- `on_intent_progress` - starts the reply phase as soon as Home Assistant hands over a
+  streaming TTS URL, and arms the stop word once (instead of double-arming it when
+  `on_tts_start` fires too).
